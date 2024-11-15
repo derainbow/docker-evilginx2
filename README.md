@@ -14,16 +14,16 @@ docker-compose up -d
 docker-compose down
 ```
 
-### Get a bash shell in the container
-
+### create container with custom name and open spesific port
 ```shell
-docker exec -it evilginx2 /bin/bash
+docker run -it --name derainbow -p 443:443 -p 80:80 -p 53:53/udp evilginx2
 ```
 
 ### Run Evilginx2 in the running container using developer and debug mode
 ```shell
 bash-5.1# evilginx -p /app/phishlets/ -developer -debug
 ```
+
 
 ### Evilginx2 Config
 
@@ -46,4 +46,14 @@ docker image prune -f
 
 ```shell
 ./docker-evilginx2/clean.sh
+```
+
+
+### How to deattach from inside running container
+```shell
+Ctrl + P, lalu Ctrl + Q
+```
+###  How to reattach from existing running container
+```shell
+docker attach <container_id_or_name>
 ```
