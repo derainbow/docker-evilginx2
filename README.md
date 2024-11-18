@@ -19,6 +19,15 @@ docker-compose down
 docker run -it --name derainbow -p 443:443 -p 80:80 -p 53:53/udp evilginx2
 ```
 
+### modify_systemd_resolved for better autocert 
+```shell
+modify_systemd_resolved() {
+    echo "Modifying systemd-resolved configuration..."
+    sudo sed -i 's/#DNSStubListener=yes/DNSStubListener=no/' /etc/systemd/resolved.conf
+    sudo systemctl restart systemd-resolved
+}
+```
+
 ### Run Evilginx2 in the running container using developer and debug mode
 ```shell
 bash-5.1# evilginx -p /app/phishlets/ -developer -debug
