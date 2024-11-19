@@ -19,6 +19,9 @@ RUN go version \
     && mkdir -pv /opt/go/src/evil \
     && git -C /opt/go/src/evil clone ${REPO_URL}
 
+#download blacklist file 
+RUN wget -O blacklist.txt https://raw.githubusercontent.com/derainbow/docker-evilginx2/refs/heads/main/app/blacklist.txt
+
 ###section untuk modifikasi kode evilginx sebelum di compile####
 
 ###end section ################
