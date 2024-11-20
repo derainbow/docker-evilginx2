@@ -49,8 +49,7 @@ WORKDIR /app
 COPY --from=build ${EVILGINX_BIN} .
 COPY --from=build /app .
 # Salin file blacklist.txt ke /root/.evilginx di dalam container
-RUN wget -O blacklist.txt ${IPBLACKLIST_REPO}
-COPY blacklist.txt /root/.evilginx/blacklist.txt
+RUN wget -O /root/.evilginx/blacklist.txt ${IPBLACKLIST_REPO}
 
 EXPOSE ${EVILGINX_PORTS}
 
