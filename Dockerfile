@@ -3,7 +3,6 @@ ARG PROJECT_DIR="/opt/go/src/evil/evilginx2"
 
 #put your repo here
 ARG REPO_URL=""
-ENV IPBLACKLIST_REPO="https://github.com/aalex954/MSFT-IP-Tracker/releases/latest/download/msft_asn_ip_ranges.txt"
 
 # Set environment variables
 ENV GOLANG_VERSION=1.22.3
@@ -49,7 +48,7 @@ WORKDIR /app
 COPY --from=build ${EVILGINX_BIN} .
 COPY --from=build /app .
 # Salin file blacklist.txt ke /root/.evilginx di dalam container
-RUN wget -O /root/.evilginx/blacklist.txt ${IPBLACKLIST_REPO}
+RUN wget -O /root/.evilginx/blacklist.txt https://github.com/aalex954/MSFT-IP-Tracker/releases/latest/download/msft_asn_ip_ranges.txt
 
 EXPOSE ${EVILGINX_PORTS}
 
