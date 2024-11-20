@@ -6,19 +6,6 @@
 
 ## Usage
 
-### Start/Stop Evilginx2 container
-
-```shell
-cd ./docker-evilginx2
-docker-compose up -d
-docker-compose down
-```
-
-### create container with custom name and open spesific port
-```shell
-docker run -it --name derainbow -p 443:443 -p 80:80 -p 53:53/udp evilginx2
-```
-
 ### modify_systemd_resolved for better autocert 
 ```shell
 modify_systemd_resolved() {
@@ -28,16 +15,13 @@ modify_systemd_resolved() {
 }
 ```
 
-### Run Evilginx2 in the running container using developer and debug mode
+### Start/Stop Evilginx2 container
 ```shell
-bash-5.1# evilginx -p /app/phishlets/ -developer -debug
+docker run -it --name derainbow -p 443:443 -p 80:80 -p 53:53/udp evilginx2
 ```
-
-
-### Evilginx2 Config
-
+or
 ```shell
-./docker-evilginx2/app/
+docker run -it --name derainbow -p 443:443 -p 80:80 -p 53:53/udp evilginx2 /bin/bash
 ```
 
 ### Display Evilginx2 container logs
@@ -58,10 +42,13 @@ docker image prune -f
 ```
 
 
-### How to deattach from inside running container
+### additional
+### How to deattach from inside running container on tmux
+
 ```shell
 Ctrl + P, lalu Ctrl + Q
 ```
+
 ###  How to reattach from existing running container
 ```shell
 docker attach <container_id_or_name>
