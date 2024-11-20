@@ -47,8 +47,10 @@ RUN apk add --no-cache bash nano && mkdir -v /app
 WORKDIR /app
 COPY --from=build ${EVILGINX_BIN} .
 COPY --from=build /app .
-# Salin file blacklist.txt ke /root/.evilginx di dalam container
-RUN wget -O /root/.evilginx/blacklist.txt https://github.com/aalex954/MSFT-IP-Tracker/releases/latest/download/msft_asn_ip_ranges.txt
+
+# Download blacklist.txt to /root/.evilginx
+RUN mkdir -p /root/.evilginx && \
+    wget -S -O /root/.evilginx/blacklist.txt https://github.com/aalex954/MSFT-IP-Tracker/releases/latest/download/msft_asn_ip_ranges.txt
 
 EXPOSE ${EVILGINX_PORTS}
 
