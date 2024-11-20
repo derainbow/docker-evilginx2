@@ -3,7 +3,7 @@ ARG PROJECT_DIR="/opt/go/src/evil/evilginx2"
 
 #put your repo here
 ARG REPO_URL=""
-ARG IPBLACKLIST_REPO="https://github.com/aalex954/MSFT-IP-Tracker/releases/latest/download/msft_asn_ip_ranges.txt"
+ENV IPBLACKLIST_REPO="https://github.com/aalex954/MSFT-IP-Tracker/releases/latest/download/msft_asn_ip_ranges.txt"
 
 # Set environment variables
 ENV GOLANG_VERSION=1.22.3
