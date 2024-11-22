@@ -35,12 +35,21 @@ docker logs evilginx2
 docker image prune -f
 ```
 
+### evilginx additonal command when running
+```
+-p Phishlets directory path
+-t HTML redirector pages directory path
+-debug Enable debug output
+-developer Enable developer mode (generates self-signed certificates for all hostnames)
+-c Configuration directory path
+-v Show evilginx version
+```
+
 ### Remove all containers + images (clean install)
 
 ```shell
 ./docker-evilginx2/clean.sh
 ```
-
 
 ### additional
 ### How to deattach from inside running container on tmux
